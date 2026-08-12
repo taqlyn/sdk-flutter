@@ -1,0 +1,54 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+Package.resolved
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Flutter / Dart / Pub
+# Libraries should not include pubspec.lock — https://dart.dev/guides/libraries/private-files
+/pubspec.lock
+**/doc/api/
+.dart_tool/
+**/.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/flutter-plugins-dependencies
+/build/
+**/build/
+/coverage/
+
+# Android / Gradle (plugin + android-host + example)
+.gradle/
+**/.gradle/
+local.properties
+**/local.properties
+.cxx/
+.externalNativeBuild/
+.kotlin/
+captures/
+*.apk
+*.aab
+
+# CocoaPods prepare_command vendored copy of sibling sdk-ios
+ios/taqlyn_sdk/Sources/TaqlynSDKCore/
+
+# Example iOS generated
+example/ios/Flutter/Generated.xcconfig
+example/ios/Flutter/ephemeral/
+example/ios/Flutter/flutter_export_environment.sh
+example/ios/Runner/GeneratedPluginRegistrant.*
