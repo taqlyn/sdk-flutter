@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:taqlyn_sdk/taqlyn_sdk.dart';
+import 'package:taqlyn_sdk/testing.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -94,6 +95,72 @@ void main() {
       );
 
       expect(await TaqlynSdk.resolveDeferred(), isNull);
+      await bridge.dispose();
+    });
+
+    test('clipboard token resolves as iOS deferred', () async {
+      final bridge = FakeNativeBridge();
+      TaqlynSdk.debugBindBridge(bridge);
+
+      await TaqlynSdk.configure(
+        clientId: 'app_test',
+        publicKeyId: 'pk_test',
+        options: const SdkOptions(apiBaseUrl: 'https://api.example.com'),
+      );
+
+      bridge.clipboardToken = 'clk_paste';
+      final link = await TaqlynSdk.resolveDeferred();
+      expect(link?.matchType, MatchType.clipboard);
+      expect(link?.params['click_id'], 'clk_paste');
+      expect(await TaqlynSdk.resolveDeferred(), isNull);
+      await bridge.dispose();
+    });
+
+    test('platform listeners: iOS clipboard vs Android referrer', () async {
+      final bridge = FakeNativeBridge();
+      TaqlynSdk.debugBindBridge(bridge);
+      await TaqlynSdk.configure(
+        clientId: 'app_test',
+        publicKeyId: 'pk_test',
+        options: const SdkOptions(apiBaseUrl: 'https://api.example.com'),
+      );
+
+      const clipboard = DeferredLink(
+        url: 'https://app.example/h',
+        path: '/h',
+        linkId: 'c1',
+        matchType: MatchType.clipboard,
+        isDeferred: true,
+      );
+      const referrer = DeferredLink(
+        url: 'https://app.example/h',
+        path: '/h',
+        linkId: 'r1',
+        matchType: MatchType.installReferrer,
+        isDeferred: true,
+      );
+
+      expect(isIosPlatformLink(clipboard), isTrue);
+      expect(isIosPlatformLink(referrer), isFalse);
+      expect(isAndroidPlatformLink(referrer), isTrue);
+      expect(isAndroidPlatformLink(clipboard), isFalse);
+
+      final ios = <DeferredLink>[];
+      final android = <DeferredLink>[];
+      final iosSub = observeUniversalLinks(platform: TargetPlatform.iOS)
+          .listen(ios.add);
+      final androidSub =
+          observeAppLinks(platform: TargetPlatform.android).listen(android.add);
+
+      bridge.emitWarm(clipboard);
+      bridge.emitWarm(referrer);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(ios.map((l) => l.linkId), ['c1']);
+      expect(android.map((l) => l.linkId), ['r1']);
+
+      await iosSub.cancel();
+      await androidSub.cancel();
       await bridge.dispose();
     });
 

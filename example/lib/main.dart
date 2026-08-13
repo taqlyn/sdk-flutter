@@ -21,6 +21,7 @@ class _TaqlynExampleAppState extends State<TaqlynExampleApp> {
   StreamSubscription<DeferredLink>? _sub;
   String _status = 'starting';
   DeferredLink? _lastLink;
+  String? _shareUrl;
 
   @override
   void initState() {
@@ -39,22 +40,23 @@ class _TaqlynExampleAppState extends State<TaqlynExampleApp> {
         'TAQLYN_PUBLIC_KEY_ID',
         defaultValue: 'pk_test_demo',
       ),
-      options: const SdkOptions(
-        apiBaseUrl: String.fromEnvironment(
+      options: SdkOptions(
+        apiBaseUrl: const String.fromEnvironment(
           'TAQLYN_API_BASE',
-          defaultValue: 'https://api.example.com',
+          defaultValue: kDefaultApiBaseUrl,
         ),
         linkProcessingMode: LinkProcessingMode.all,
         env: 'sandbox',
       ),
     );
 
-    // 2) listen observeLinks (deferred gated natively until ready)
-    _sub = TaqlynSdk.observeLinks().listen((link) async {
+    // 2) platform-only listener (iOS clipboard/UL, Android referrer/AL)
+    _sub = observePlatformLinks().listen((link) async {
       _pending.set(link);
       setState(() {
         _lastLink = link;
-        _status = 'observed ${link.path} (${link.linkId})';
+        _status =
+            'observed ${link.path} (${link.matchType.wireValue} ${link.linkId})';
       });
       // 5) consume after handoff
       await TaqlynSdk.consume(link.linkId);
@@ -103,10 +105,30 @@ class _TaqlynExampleAppState extends State<TaqlynExampleApp> {
                 Text('matchType: ${_lastLink!.matchType.wireValue}'),
                 Text('isDeferred: ${_lastLink!.isDeferred}'),
               ],
+              if (_shareUrl != null) Text('Share: $_shareUrl'),
               const Spacer(),
+              ElevatedButton(
+                onPressed: () async {
+                  try {
+                    final link = await TaqlynSdk.createShareLink(
+                      destinationPath: '/home',
+                      params: const {'from': 'share'},
+                    );
+                    setState(() {
+                      _shareUrl = link.shortUrl;
+                      _status = 'share ${link.code}';
+                    });
+                  } catch (err) {
+                    setState(() => _status = 'share error: $err');
+                  }
+                },
+                child: const Text('Create share link'),
+              ),
+              const SizedBox(height: 12),
               const Text(
-                'Demo: configure → resolveDeferred → setReadyForNavigation → '
-                'observeLinks → consume.\n'
+                'Demo: configure → resolveDeferred (iOS clipboard / Android '
+                'referrer) → setReadyForNavigation → observePlatformLinks → '
+                'consume.\n'
                 'Imports taqlyn_sdk (+ soft nav-go-router) only — '
                 'never OS referrer or clipboard kits.',
               ),

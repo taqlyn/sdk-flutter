@@ -152,14 +152,18 @@ enum LinkProcessingMode {
   }
 }
 
+/// Hosted API origin. Self-host: pass [SdkOptions.apiBaseUrl].
+const String kDefaultApiBaseUrl = 'https://api.rutvik.qzz.io';
+
 /// Configure options for [TaqlynSdk.configure].
 class SdkOptions {
   const SdkOptions({
-    required this.apiBaseUrl,
+    this.apiBaseUrl = kDefaultApiBaseUrl,
     this.linkProcessingMode = LinkProcessingMode.all,
     this.env,
   });
 
+  /// Override for self-host. Defaults to [kDefaultApiBaseUrl].
   final String apiBaseUrl;
   final LinkProcessingMode linkProcessingMode;
   final String? env;

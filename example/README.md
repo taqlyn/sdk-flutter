@@ -1,17 +1,35 @@
-# taqlyn_sdk_example
+# taqlyn_sdk example
 
-Demonstrates how to use the taqlyn_sdk plugin.
+Flutter proof harness for deferred resolve + ready-gate + consume.
 
-## Getting Started
+## Public demo API
 
-This project is a starting point for a Flutter application.
+Defaults target the Cloudflare Tunnel host `https://api.rutvik.qzz.io`. Seed credentials first:
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+# repo root
+make up-tunnel
+eval "$(./scripts/demo-seed.sh | sed -n '/^export /p')"
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Run
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+cd packages/sdk-flutter/example
+flutter run \
+  --dart-define=TAQLYN_API_BASE=${TAQLYN_BASE_URL:-https://api.rutvik.qzz.io} \
+  --dart-define=TAQLYN_CLIENT_ID=$TAQLYN_CLIENT_ID \
+  --dart-define=TAQLYN_PUBLIC_KEY_ID=$TAQLYN_PUBLIC_KEY_ID
+```
+
+## Flow
+
+1. `TaqlynSdk.configure`
+2. `observeLinks`
+3. `resolveDeferred`
+4. `setReadyForNavigation(true)`
+5. `consume`
+
+Import `package:taqlyn_sdk` only — never Play Referrer / pasteboard types from example code.
+
+See also [docs/guides/public-demo.md](../../../docs/guides/public-demo.md) and [examples/README.md](../../../examples/README.md).

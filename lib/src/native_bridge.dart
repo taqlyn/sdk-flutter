@@ -90,6 +90,7 @@ class FakeNativeBridge implements NativeBridge {
   bool readyForNavigation = false;
   DeferredLink? pendingDeferred;
   DeferredLink? nextResolveResult;
+  String? clipboardToken;
   LinkProcessingMode mode = LinkProcessingMode.all;
 
   final _controller = StreamController<DeferredLink>.broadcast();
@@ -114,7 +115,20 @@ class FakeNativeBridge implements NativeBridge {
   Future<DeferredLink?> resolveDeferred() async {
     if (!configured) return null;
     if (mode == LinkProcessingMode.webOnly) return null;
-    final link = nextResolveResult;
+    var link = nextResolveResult;
+    nextResolveResult = null;
+    final token = clipboardToken;
+    if (link == null && token != null && token.trim().isNotEmpty) {
+      clipboardToken = null;
+      link = DeferredLink(
+        url: 'https://links.example.com/open?click_id=${Uri.encodeComponent(token)}',
+        path: '/home',
+        linkId: 'clip_$token',
+        matchType: MatchType.clipboard,
+        isDeferred: true,
+        params: {'click_id': token},
+      );
+    }
     if (link == null) return null;
     pendingDeferred = link;
     if (readyForNavigation) {

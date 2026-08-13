@@ -13,17 +13,20 @@ await TaqlynSdk.configure(
   clientId: 'app_…',
   publicKeyId: 'pk_…',
   options: SdkOptions(
-    apiBaseUrl: 'https://api.example.com',
+    // apiBaseUrl optional — defaults to kDefaultApiBaseUrl (self-host: pass yours)
     linkProcessingMode: LinkProcessingMode.all, // all | webOnly | deferredOnly
     env: 'sandbox',
   ),
 );
 
+final share = await TaqlynSdk.createShareLink(destinationPath: '/offer');
+
 final deferred = await TaqlynSdk.resolveDeferred(); // DeferredLink?
-TaqlynSdk.observeLinks().listen((link) async {
-  // navigate once…
+TaqlynSdk.observePlatformLinks().listen((link) async {
+  // iOS: clipboard / UL. Android: referrer / App Links.
   await TaqlynSdk.consume(link.linkId);
 });
+// Or `package:taqlyn_sdk/ios.dart` / `package:taqlyn_sdk/android.dart`.
 await TaqlynSdk.setReadyForNavigation(true);
 ```
 
@@ -33,10 +36,12 @@ await TaqlynSdk.setReadyForNavigation(true);
 ## Architecture
 
 ```text
-Dart TaqlynSdk  →  NativeBridge (MethodChannel / EventChannel)
+Dart TaqlynSdk  →  MethodChannelNativeBridge (real plugin channel)
                       ├─ Android FlutterPlugin → com.taqlyn.sdk.SdkCore
                       └─ iOS FlutterPlugin     → TaqlynSDK.SdkCore
 ```
+
+App / example code must use the MethodChannel bridge only. Unit tests may import `package:taqlyn_sdk/testing.dart`.
 
 Optional soft helper: monorepo `packages/nav-go-router` (`PendingDeepLink`) for
 go_router redirect races — no Match logic.
@@ -89,9 +94,13 @@ Soft-uses `taqlyn_nav_go_router` for a pending-link holder.
 
 ```bash
 cd example && flutter run
-# Optional dart-defines:
-# --dart-define=TAQLYN_API_BASE=https://api.sandbox.example.com
+# Optional dart-defines (defaults → https://api.rutvik.qzz.io):
+# --dart-define=TAQLYN_API_BASE=https://api.rutvik.qzz.io
+# --dart-define=TAQLYN_CLIENT_ID=app_test_…
+# --dart-define=TAQLYN_PUBLIC_KEY_ID=pk_test_…
 ```
+
+Public tunnel: [docs/guides/public-demo.md](../../docs/guides/public-demo.md), seed with `./scripts/demo-seed.sh`.
 
 ## Tests
 

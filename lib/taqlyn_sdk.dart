@@ -5,3 +5,4 @@
 library;
 
 export 'src/taqlyn_sdk.dart';
+export 'src/platform_links.dart';
