@@ -1,5 +1,7 @@
 # Taqlyn Flutter SDK (`taqlyn_sdk`)
 
+**Full guide:** [Flutter cookbook](../../apps/docs/content/platforms/flutter.md) on the docs site.
+
 Thin Flutter plugin that delegates to canonical native **SdkCore**
 (`packages/sdk-android`, `packages/sdk-ios`). Pub name: **`taqlyn_sdk`**.
 
