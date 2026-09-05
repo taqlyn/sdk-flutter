@@ -153,7 +153,7 @@ enum LinkProcessingMode {
 }
 
 /// Hosted API origin. Self-host: pass [SdkOptions.apiBaseUrl].
-const String kDefaultApiBaseUrl = 'https://api.rutvik.qzz.io';
+const String kDefaultApiBaseUrl = 'https://api.taqlyn.com';
 
 /// Configure options for [TaqlynSdk.configure].
 class SdkOptions {

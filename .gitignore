@@ -3,7 +3,9 @@
 *.log
 *.pyc
 *.swp
+*~
 .DS_Store
+Thumbs.db
 .atom/
 .build/
 .buildlog/
@@ -13,11 +15,17 @@
 migrate_working_dir/
 Package.resolved
 
-# IntelliJ
+# IDE & Editor
 *.iml
 *.ipr
 *.iws
 .idea/
+.vscode/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
 
 # Flutter / Dart / Pub
 # Libraries should not include pubspec.lock — https://dart.dev/guides/libraries/private-files
@@ -43,6 +51,7 @@ local.properties
 captures/
 *.apk
 *.aab
+!gradle-wrapper.jar
 
 # CocoaPods prepare_command vendored copy of sibling sdk-ios
 ios/taqlyn_sdk/Sources/TaqlynSDKCore/

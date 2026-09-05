@@ -96,8 +96,8 @@ Soft-uses `taqlyn_nav_go_router` for a pending-link holder.
 
 ```bash
 cd example && flutter run
-# Optional dart-defines (defaults → https://api.rutvik.qzz.io):
-# --dart-define=TAQLYN_API_BASE=https://api.rutvik.qzz.io
+# Optional dart-defines (defaults → https://api.taqlyn.com):
+# --dart-define=TAQLYN_API_BASE=https://api.taqlyn.com
 # --dart-define=TAQLYN_CLIENT_ID=app_test_…
 # --dart-define=TAQLYN_PUBLIC_KEY_ID=pk_test_…
 ```
