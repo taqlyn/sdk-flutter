@@ -1,0 +1,46 @@
+name: Publish Flutter Plugin (pub.dev)
+
+# pub.dev uses 100% Tokenless OIDC Automated Publishing.
+# When id-token: write is enabled, GitHub Actions mints a short-lived OIDC JWT
+# verified by pub.dev for the verified publisher 'taqlyn.com'. Zero static tokens needed.
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+concurrency:
+  group: publish-flutter-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # Required for pub.dev OIDC exchange
+
+jobs:
+  publish:
+    name: Verify & Publish to pub.dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Verify package (dry-run)
+        run: dart pub publish --dry-run
+
+      - name: Publish to pub.dev via OIDC
+        run: dart pub publish --force
