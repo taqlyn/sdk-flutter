@@ -25,6 +25,9 @@ jobs:
   publish:
     name: Verify & Publish to pub.dev
     runs-on: ubuntu-latest
+    environment:
+      name: pubdev
+      url: https://pub.dev/packages/taqlyn_sdk
     permissions:
       contents: read
       id-token: write
