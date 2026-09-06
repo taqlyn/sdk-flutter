@@ -1,10 +1,10 @@
 # taqlyn_sdk example
 
-Flutter proof harness for deferred resolve + ready-gate + consume.
+Flutter proof harness for deferred resolve + ready-gate + consume. Uses `path:` to the plugin (and sibling nav adapter) in this repo. Customer apps install `taqlyn_sdk` / `taqlyn_nav_go_router` from pub.dev.
 
 ## Public demo API
 
-Defaults target the Cloudflare Tunnel host `https://api.rutvik.qzz.io`. Seed credentials first:
+The SDK talks to `https://api.taqlyn.com`. Seed credentials first:
 
 ```bash
 # repo root
@@ -17,7 +17,6 @@ eval "$(./scripts/demo-seed.sh | sed -n '/^export /p')"
 ```bash
 cd packages/sdk-flutter/example
 flutter run \
-  --dart-define=TAQLYN_API_BASE=${TAQLYN_BASE_URL:-https://api.rutvik.qzz.io} \
   --dart-define=TAQLYN_CLIENT_ID=$TAQLYN_CLIENT_ID \
   --dart-define=TAQLYN_PUBLIC_KEY_ID=$TAQLYN_PUBLIC_KEY_ID
 ```

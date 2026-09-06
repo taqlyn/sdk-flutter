@@ -25,9 +25,3 @@ plugins {
 }
 
 include(":app")
-
-// Monorepo: wire sibling packages/sdk-android/taqlyn-sdk for the Flutter plugin.
-// Alternative: includeBuild("../../../sdk-android") { dependencySubstitution { … } }
-include(":taqlyn-sdk")
-project(":taqlyn-sdk").projectDir =
-    file("../../../sdk-android/taqlyn-sdk")

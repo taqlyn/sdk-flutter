@@ -10,14 +10,13 @@ let package = Package(
         .library(name: "taqlyn-sdk", targets: ["taqlyn_sdk"]),
     ],
     dependencies: [
-        // Monorepo sibling: packages/sdk-ios (SPM path ../sdk-ios from packages/sdk-flutter).
-        .package(name: "TaqlynSDK", path: "../../../sdk-ios"),
+        .package(url: "https://github.com/taqlyn/sdk-ios.git", from: "0.1.0"),
     ],
     targets: [
         .target(
             name: "taqlyn_sdk",
             dependencies: [
-                .product(name: "TaqlynSDK", package: "TaqlynSDK"),
+                .product(name: "TaqlynSDK", package: "sdk-ios"),
             ],
             resources: [
                 .process("PrivacyInfo.xcprivacy"),

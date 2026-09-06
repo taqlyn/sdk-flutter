@@ -152,24 +152,19 @@ enum LinkProcessingMode {
   }
 }
 
-/// Hosted API origin. Self-host: pass [SdkOptions.apiBaseUrl].
-const String kDefaultApiBaseUrl = 'https://api.taqlyn.com';
-
 /// Configure options for [TaqlynSdk.configure].
+///
+/// The control-plane origin is baked into the SDK (`https://api.taqlyn.com`).
 class SdkOptions {
   const SdkOptions({
-    this.apiBaseUrl = kDefaultApiBaseUrl,
     this.linkProcessingMode = LinkProcessingMode.all,
     this.env,
   });
 
-  /// Override for self-host. Defaults to [kDefaultApiBaseUrl].
-  final String apiBaseUrl;
   final LinkProcessingMode linkProcessingMode;
   final String? env;
 
   Map<String, Object?> toMap() => {
-        'apiBaseUrl': apiBaseUrl,
         'linkProcessingMode': linkProcessingMode.wireValue,
         if (env != null) 'env': env,
       };

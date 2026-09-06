@@ -41,10 +41,6 @@ class _TaqlynExampleAppState extends State<TaqlynExampleApp> {
         defaultValue: 'pk_test_demo',
       ),
       options: SdkOptions(
-        apiBaseUrl: const String.fromEnvironment(
-          'TAQLYN_API_BASE',
-          defaultValue: kDefaultApiBaseUrl,
-        ),
         linkProcessingMode: LinkProcessingMode.all,
         env: 'sandbox',
       ),

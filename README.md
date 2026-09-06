@@ -15,7 +15,6 @@ await TaqlynSdk.configure(
   clientId: 'app_…',
   publicKeyId: 'pk_…',
   options: SdkOptions(
-    // apiBaseUrl optional — defaults to kDefaultApiBaseUrl (self-host: pass yours)
     linkProcessingMode: LinkProcessingMode.all, // all | webOnly | deferredOnly
     env: 'sandbox',
   ),
@@ -56,34 +55,14 @@ go_router redirect races — no Match logic.
 - [ ] Enable **Associated Domains** (`applinks:<host>`) on the Runner target
 - [ ] Call after `WidgetsFlutterBinding.ensureInitialized()` before `configure`
 - [ ] Forward Universal Links: `TaqlynSdkPlugin.handleOpenURL(url)` from AppDelegate / scene
-- [ ] Native SdkCore linked via plugin podspec (monorepo copies `../sdk-ios` Sources) or SPM path `ios/taqlyn_sdk/Package.swift` → `../../../sdk-ios`
+- [ ] Native SdkCore comes from published `TaqlynSDK` (CocoaPods / SPM). Host apps must not add a local `packages/sdk-ios` path.
 - [ ] Deployment target **iOS 16+** (matches sdk-ios)
 
 ### Android
 
 - [ ] Host **assetlinks.json** with Play App Signing SHA-256
 - [ ] App Links intent filter + `android:autoVerify="true"` on the Activity
-- [ ] Plugin Gradle depends on sibling `:taqlyn-sdk` (`packages/sdk-android/taqlyn-sdk`)
-- [ ] In the **host app** `android/settings.gradle(.kts)`, include the native module:
-
-```kotlin
-include(":taqlyn-sdk")
-project(":taqlyn-sdk").projectDir =
-    file("../../sdk-android/taqlyn-sdk") // adjust relative path
-```
-
-Composite-build alternative:
-
-```kotlin
-includeBuild("../sdk-android") {
-    dependencySubstitution {
-        substitute(module("com.taqlyn.sdk:taqlyn-sdk")).using(project(":taqlyn-sdk"))
-    }
-}
-```
-
-(Requires publishing coordinates on the Android library when using Maven substitution.)
-
+- [ ] Plugin Gradle depends on Maven Central `com.taqlyn:taqlyn-sdk` (published with the Android SDK)
 - [ ] Emulators often **cannot** exercise Play Install Referrer — use a real device
 
 ## Example
@@ -96,8 +75,7 @@ Soft-uses `taqlyn_nav_go_router` for a pending-link holder.
 
 ```bash
 cd example && flutter run
-# Optional dart-defines (defaults → https://api.taqlyn.com):
-# --dart-define=TAQLYN_API_BASE=https://api.taqlyn.com
+# Optional dart-defines:
 # --dart-define=TAQLYN_CLIENT_ID=app_test_…
 # --dart-define=TAQLYN_PUBLIC_KEY_ID=pk_test_…
 ```

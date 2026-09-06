@@ -9,7 +9,7 @@ void main() {
     await TaqlynSdk.configure(
       clientId: 'app_test_demo',
       publicKeyId: 'pk_test_demo',
-      options: const SdkOptions(apiBaseUrl: 'https://api.example.com'),
+      options: const SdkOptions(),
     );
     final link = await TaqlynSdk.resolveDeferred();
     // Organic / no referrer on simulators → null is success for smoke.

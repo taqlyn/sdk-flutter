@@ -3,18 +3,18 @@ import 'dart:io';
 
 import 'models.dart';
 
+const String _kApiOrigin = 'https://api.taqlyn.com';
+
 /// Session remembered from [TaqlynSdk.configure] for in-app share create.
 class ShareSession {
   const ShareSession({
     required this.clientId,
     required this.publicKeyId,
-    required this.apiBaseUrl,
     this.env,
   });
 
   final String clientId;
   final String publicKeyId;
-  final String apiBaseUrl;
   final String? env;
 }
 
@@ -45,12 +45,6 @@ class ShareLink {
   }
 }
 
-String normalizeApiBaseUrl(String? value) {
-  final trimmed = (value ?? kDefaultApiBaseUrl).trim();
-  final base = trimmed.isEmpty ? kDefaultApiBaseUrl : trimmed;
-  return base.replaceFirst(RegExp(r'/+$'), '');
-}
-
 /// Thin HTTP wrapper for `POST /v1/sdk/short-links` (stdlib [HttpClient]).
 class ShareClient {
   ShareClient({HttpClient? httpClient}) : _http = httpClient ?? HttpClient();
@@ -72,7 +66,7 @@ class ShareClient {
       throw ArgumentError('destinationPath or destinationWeb required');
     }
 
-    final uri = Uri.parse('${session.apiBaseUrl}/v1/sdk/short-links');
+    final uri = Uri.parse('$_kApiOrigin/v1/sdk/short-links');
     final request = await _http.postUrl(uri);
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');

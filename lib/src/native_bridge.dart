@@ -104,7 +104,6 @@ class FakeNativeBridge implements NativeBridge {
   }) async {
     assert(clientId.isNotEmpty);
     assert(publicKeyId.isNotEmpty);
-    assert(options.apiBaseUrl.isNotEmpty);
     configured = true;
     mode = options.linkProcessingMode;
     readyForNavigation = false;

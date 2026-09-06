@@ -54,13 +54,11 @@ class TaqlynSdkPlugin :
                     val clientId = call.argument<String>("clientId") ?: ""
                     val publicKeyId = call.argument<String>("publicKeyId") ?: ""
                     val optionsMap = call.argument<Map<String, Any?>>("options") ?: emptyMap()
-                    val apiBaseUrl = optionsMap["apiBaseUrl"] as? String ?: ""
                     val modeWire = optionsMap["linkProcessingMode"] as? String
                     val env = optionsMap["env"] as? String
                     TaqlynFlutterSdkBridge.configure(
                         clientId = clientId,
                         publicKeyId = publicKeyId,
-                        apiBaseUrl = apiBaseUrl,
                         linkProcessingMode = modeWire,
                         env = env,
                         context = appContext,

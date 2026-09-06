@@ -28,29 +28,20 @@ class TaqlynSdk {
   }
 
   /// Configure early in process lifetime (after `WidgetsFlutterBinding`).
-  ///
-  /// [SdkOptions.apiBaseUrl] defaults to [kDefaultApiBaseUrl]; pass it only
-  /// to self-host.
   static Future<void> configure({
     required String clientId,
     required String publicKeyId,
     SdkOptions options = const SdkOptions(),
   }) {
-    final apiBaseUrl = normalizeApiBaseUrl(options.apiBaseUrl);
     _session = ShareSession(
       clientId: clientId.trim(),
       publicKeyId: publicKeyId.trim(),
-      apiBaseUrl: apiBaseUrl,
       env: options.env,
     );
     return _bridge.configure(
       clientId: clientId,
       publicKeyId: publicKeyId,
-      options: SdkOptions(
-        apiBaseUrl: apiBaseUrl,
-        linkProcessingMode: options.linkProcessingMode,
-        env: options.env,
-      ),
+      options: options,
     );
   }
 

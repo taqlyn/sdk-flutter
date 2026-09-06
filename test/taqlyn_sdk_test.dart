@@ -39,7 +39,7 @@ void main() {
       await TaqlynSdk.configure(
         clientId: 'app_test',
         publicKeyId: 'pk_test',
-        options: const SdkOptions(apiBaseUrl: 'https://api.example.com'),
+        options: const SdkOptions(),
       );
 
       bridge.nextResolveResult = const DeferredLink(
@@ -81,7 +81,6 @@ void main() {
         clientId: 'app_test',
         publicKeyId: 'pk_test',
         options: const SdkOptions(
-          apiBaseUrl: 'https://api.example.com',
           linkProcessingMode: LinkProcessingMode.webOnly,
         ),
       );
@@ -105,7 +104,7 @@ void main() {
       await TaqlynSdk.configure(
         clientId: 'app_test',
         publicKeyId: 'pk_test',
-        options: const SdkOptions(apiBaseUrl: 'https://api.example.com'),
+        options: const SdkOptions(),
       );
 
       bridge.clipboardToken = 'clk_paste';
@@ -122,7 +121,7 @@ void main() {
       await TaqlynSdk.configure(
         clientId: 'app_test',
         publicKeyId: 'pk_test',
-        options: const SdkOptions(apiBaseUrl: 'https://api.example.com'),
+        options: const SdkOptions(),
       );
 
       const clipboard = DeferredLink(
@@ -171,7 +170,7 @@ void main() {
       await TaqlynSdk.configure(
         clientId: 'app_test',
         publicKeyId: 'pk_test',
-        options: const SdkOptions(apiBaseUrl: 'https://api.example.com'),
+        options: const SdkOptions(),
       );
 
       final seen = <DeferredLink>[];
@@ -231,7 +230,6 @@ void main() {
         clientId: 'app_test',
         publicKeyId: 'pk_test',
         options: const SdkOptions(
-          apiBaseUrl: 'https://api.example.com',
           linkProcessingMode: LinkProcessingMode.deferredOnly,
           env: 'sandbox',
         ),

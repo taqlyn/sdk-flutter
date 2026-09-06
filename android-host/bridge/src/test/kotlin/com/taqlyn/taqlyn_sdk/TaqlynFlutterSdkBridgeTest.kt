@@ -99,7 +99,6 @@ class TaqlynFlutterSdkBridgeTest {
         TaqlynFlutterSdkBridge.configure(
             clientId = "app_test",
             publicKeyId = "pk_test",
-            apiBaseUrl = "https://api.sandbox.example.com",
             linkProcessingMode = "all",
             env = "sandbox",
             context = null,

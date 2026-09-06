@@ -6,9 +6,7 @@ import TaqlynSDK
 #endif
 
 /// Flutter embedding → TaqlynSDK.SdkCore. App Dart never sees UIPasteboard types.
-///
-/// When CocoaPods compiles sibling `sdk-ios` sources into this pod (monorepo
-/// prepare_command), SdkCore types live in the same module and need no import.
+/// Native SdkCore comes from published `TaqlynSDK` (CocoaPods / SPM).
 public class TaqlynSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
   private var eventSink: FlutterEventSink?
   private var observeTask: Task<Void, Never>?
@@ -27,26 +25,24 @@ public class TaqlynSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
     case "configure":
       guard let args = call.arguments as? [String: Any],
             let clientId = args["clientId"] as? String,
-            let publicKeyId = args["publicKeyId"] as? String,
-            let optionsMap = args["options"] as? [String: Any],
-            let apiBaseUrl = optionsMap["apiBaseUrl"] as? String
+            let publicKeyId = args["publicKeyId"] as? String
       else {
         result(
           FlutterError(
             code: "bad_args",
-            message: "configure requires clientId, publicKeyId, options",
+            message: "configure requires clientId, publicKeyId",
             details: nil
           )
         )
         return
       }
+      let optionsMap = args["options"] as? [String: Any] ?? [:]
       let modeWire = optionsMap["linkProcessingMode"] as? String
       let env = optionsMap["env"] as? String
       SdkCore.configure(
         clientId: clientId,
         publicKeyId: publicKeyId,
         options: SdkOptions(
-          apiBaseUrl: apiBaseUrl,
           linkProcessingMode: Self.modeFromWire(modeWire),
           env: env
         )

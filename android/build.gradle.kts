@@ -63,10 +63,7 @@ kotlin {
 }
 
 dependencies {
-    // Monorepo sibling: packages/sdk-android/taqlyn-sdk
-    // Included from the host app settings.gradle (see README / example).
-    // Composite alternative: includeBuild("../sdk-android") + dependencySubstitution.
-    implementation(project(":taqlyn-sdk"))
+    implementation("com.taqlyn:taqlyn-sdk:0.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")

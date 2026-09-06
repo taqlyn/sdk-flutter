@@ -28,7 +28,6 @@ object TaqlynFlutterSdkBridge {
     fun configure(
         clientId: String,
         publicKeyId: String,
-        apiBaseUrl: String,
         linkProcessingMode: String?,
         env: String?,
         context: Context? = null,
@@ -42,7 +41,6 @@ object TaqlynFlutterSdkBridge {
             publicKeyId = publicKeyId,
             options =
                 SdkOptions(
-                    apiBaseUrl = apiBaseUrl,
                     linkProcessingMode = modeFromWire(linkProcessingMode),
                     env = env,
                 ),
