@@ -1,8 +1,9 @@
 name: Publish Flutter Plugin (pub.dev)
 
-# pub.dev uses 100% Tokenless OIDC Automated Publishing.
-# When id-token: write is enabled, GitHub Actions mints a short-lived OIDC JWT
-# verified by pub.dev for the verified publisher 'taqlyn.com'. Zero static tokens needed.
+# Publish after com.taqlyn:taqlyn-sdk (Maven Central) and TaqlynSDK (SPM/CocoaPods)
+# are on their registries. This repo cannot wait on those other repositories.
+#
+# pub.dev uses tokenless OIDC automated publishing (verified publisher taqlyn.com).
 
 on:
   release:
@@ -24,6 +25,9 @@ jobs:
   publish:
     name: Verify & Publish to pub.dev
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
