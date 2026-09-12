@@ -20,9 +20,8 @@ dependencies:
   taqlyn_sdk:
     path: ../
 
-  # Soft go_router ready-gate helper (monorepo packages/nav-go-router).
-  taqlyn_nav_go_router:
-    path: ../../nav-go-router
+  # Soft go_router ready-gate helper.
+  taqlyn_nav_go_router: ^0.1.0
 
   cupertino_icons: ^1.0.8
 

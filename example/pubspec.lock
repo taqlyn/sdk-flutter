@@ -226,9 +226,10 @@ packages:
   taqlyn_nav_go_router:
     dependency: "direct main"
     description:
-      path: "../../nav-go-router"
-      relative: true
-    source: path
+      name: taqlyn_nav_go_router
+      sha256: "8715b509ce6020d6ae30026e90c911070d32b1c490da7164ec56d727e80017af"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   taqlyn_sdk:
     dependency: "direct main"
@@ -236,7 +237,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.1.1"
   term_glyph:
     dependency: transitive
     description:
