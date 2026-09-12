@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'models.dart';
-
 const String _kApiOrigin = 'https://api.taqlyn.com';
 
 /// Session remembered from [TaqlynSdk.configure] for in-app share create.
@@ -78,11 +76,11 @@ class ShareClient {
         'publicKeyId': session.publicKeyId,
         if (path.isNotEmpty) 'destinationPath': path,
         if (web.isNotEmpty) 'destinationWeb': web,
-        if (params != null) 'params': params,
-        if (ogTitle != null) 'ogTitle': ogTitle,
-        if (ogDescription != null) 'ogDescription': ogDescription,
-        if (ogImage != null) 'ogImage': ogImage,
-        if (session.env != null) 'env': session.env,
+        'params': ?params,
+        'ogTitle': ?ogTitle,
+        'ogDescription': ?ogDescription,
+        'ogImage': ?ogImage,
+        'env': ?session.env,
       }),
     );
     final response = await request.close();

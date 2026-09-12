@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'models.dart';
 import 'taqlyn_sdk.dart';
 
 /// Warm UL, or deferred clipboard / App Clip / claim (iOS).

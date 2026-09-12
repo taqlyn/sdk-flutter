@@ -14,7 +14,7 @@ class TaqlynSdk {
 
   static NativeBridge _bridge = MethodChannelNativeBridge();
   static ShareSession? _session;
-  static ShareClient _shareClient = ShareClient();
+  static final ShareClient _shareClient = ShareClient();
 
   /// Override the native bridge (unit tests only).
   static void debugBindBridge(NativeBridge bridge) {
