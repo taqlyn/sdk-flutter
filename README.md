@@ -44,8 +44,8 @@ Dart TaqlynSdk  →  MethodChannelNativeBridge (real plugin channel)
 
 App / example code must use the MethodChannel bridge only. Unit tests may import `package:taqlyn_sdk/testing.dart`.
 
-Optional soft helper: monorepo `packages/nav-go-router` (`PendingDeepLink`) for
-go_router redirect races — no Match logic.
+Optional soft helper: pub.dev `taqlyn_nav_go_router` (sibling `packages/nav-go-router`)
+for go_router redirect races — no Match logic.
 
 ## Platform setup checklist
 
