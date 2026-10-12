@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.2.0
+
+- Short-link expand (`resolveIncomingUrl`, await / optimistic)
+- Client analytics: `trackOpen` / `logEvent`
+- Fingerprint match type on deferred resolves (Android opt-in)
+
 ## 0.1.1
 
 - Setup automated pub.dev OIDC publishing via GitHub Actions
