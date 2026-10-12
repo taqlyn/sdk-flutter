@@ -15,18 +15,25 @@ await TaqlynSdk.configure(
   clientId: 'app_…',
   publicKeyId: 'pk_…',
   options: SdkOptions(
-    linkProcessingMode: LinkProcessingMode.all, // all | webOnly | deferredOnly
+    linkProcessingMode: LinkProcessingMode.deferredOnly, // when go_router owns warm URLs
     env: 'sandbox',
+    resolveMode: ResolveMode.awaitMode,
+    fallbackPath: '/',
+    hosts: ['https://go.example.com'],
+    timeoutMs: 1500,
   ),
 );
 
 final share = await TaqlynSdk.createShareLink(destinationPath: '/offer');
 
 final deferred = await TaqlynSdk.resolveDeferred(); // DeferredLink?
+final nav = await TaqlynSdk.resolveIncomingUrl('https://go.example.com/Ab12Cd');
 TaqlynSdk.observePlatformLinks().listen((link) async {
   // iOS: clipboard / UL. Android: referrer / App Links.
-  await TaqlynSdk.consume(link.linkId);
+  await TaqlynSdk.consume(link.linkId); // also trackOpen
 });
+await TaqlynSdk.trackOpen('lnk_…');
+await TaqlynSdk.logEvent('view_item', data: {'sku': '42'});
 // Or `package:taqlyn_sdk/ios.dart` / `package:taqlyn_sdk/android.dart`.
 await TaqlynSdk.setReadyForNavigation(true);
 ```
