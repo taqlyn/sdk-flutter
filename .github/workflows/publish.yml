@@ -25,6 +25,7 @@ jobs:
   publish:
     name: Verify & Publish to pub.dev
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment:
       name: pubdev
       url: https://pub.dev/packages/taqlyn_sdk
@@ -50,4 +51,10 @@ jobs:
         run: dart pub publish --dry-run
 
       - name: Publish to pub.dev via OIDC
-        run: dart pub publish --force
+        env:
+          PUB_DETAILED_TIMING: "1"
+        run: |
+          set -euo pipefail
+          echo "GITHUB_ACTIONS=${GITHUB_ACTIONS:-} GITHUB_REF=$GITHUB_REF"
+          # Bound wait: interactive auth hangs forever when OIDC/automated publishing is misconfigured.
+          timeout 180 dart pub publish --force -v
