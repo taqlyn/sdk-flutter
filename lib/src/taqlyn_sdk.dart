@@ -1,3 +1,5 @@
+import 'events.dart';
+import 'expand.dart';
 import 'models.dart';
 import 'native_bridge.dart';
 import 'share.dart';
@@ -14,7 +16,10 @@ class TaqlynSdk {
 
   static NativeBridge _bridge = MethodChannelNativeBridge();
   static ShareSession? _session;
+  static SdkOptions _options = const SdkOptions();
   static final ShareClient _shareClient = ShareClient();
+  static final ExpandClient _expandClient = ExpandClient();
+  static final EventsClient _eventsClient = EventsClient();
 
   /// Override the native bridge (unit tests only).
   static void debugBindBridge(NativeBridge bridge) {
@@ -25,6 +30,7 @@ class TaqlynSdk {
   static void debugResetBridge() {
     _bridge = MethodChannelNativeBridge();
     _session = null;
+    _options = const SdkOptions();
   }
 
   /// Configure early in process lifetime (after `WidgetsFlutterBinding`).
@@ -38,11 +44,43 @@ class TaqlynSdk {
       publicKeyId: publicKeyId.trim(),
       env: options.env,
     );
+    _options = options;
     return _bridge.configure(
       clientId: clientId,
       publicKeyId: publicKeyId,
       options: options,
     );
+  }
+
+  /// Expand a short URL via POST /v1/links/expand.
+  static Future<ExpandResult?> resolveShortLink(String url) async {
+    final session = _session;
+    if (session == null) return null;
+    return _expandClient.expand(session: session, url: url);
+  }
+
+  /// Map an incoming URL using hosts + short-code heuristic and resolveMode.
+  static Future<ResolvedNavTarget?> resolveIncomingUrl(String url) async {
+    final session = _session;
+    if (session == null) return pathMapOnly(url);
+    if (!shouldExpand(url, _options.hosts)) return pathMapOnly(url);
+    final fallback =
+        (_options.fallbackPath == null || _options.fallbackPath!.isEmpty)
+            ? '/'
+            : _options.fallbackPath!;
+    final clientMode = _options.resolveMode ?? ResolveMode.awaitMode;
+    if (clientMode == ResolveMode.optimistic) {
+      return ResolvedNavTarget(href: fallback, pendingExpand: true);
+    }
+    final timeoutMs = _options.timeoutMs < 100 ? 100 : _options.timeoutMs;
+    final result = await withTimeoutMs(timeoutMs, () => resolveShortLink(url));
+    if (result != null) {
+      return ResolvedNavTarget(
+        href: hrefFromExpand(result),
+        linkId: result.linkId,
+      );
+    }
+    return ResolvedNavTarget(href: fallback);
   }
 
   /// Mint a unified short link for in-app sharing (public key id only).
@@ -79,8 +117,28 @@ class TaqlynSdk {
   /// Install Referrer stays on Android.
   static Stream<DeferredLink> observeLinks() => _bridge.observeLinks();
 
+  /// Report that the SDK opened/consumed a link (fire-and-forget).
+  static Future<void> trackOpen(String linkId) async {
+    final session = _session;
+    if (session == null) return;
+    await _eventsClient.trackOpen(session: session, linkId: linkId);
+  }
+
+  /// Custom SDK analytics event (fire-and-forget).
+  static Future<void> logEvent(
+    String name, {
+    Map<String, Object?>? data,
+  }) async {
+    final session = _session;
+    if (session == null) return;
+    await _eventsClient.logEvent(session: session, name: name, data: data);
+  }
+
   /// Clear pending deferred when [linkId] matches.
-  static Future<void> consume(String linkId) => _bridge.consume(linkId);
+  static Future<void> consume(String linkId) async {
+    await _bridge.consume(linkId);
+    await trackOpen(linkId);
+  }
 
   /// When true, deliver any pending deferred link to [observeLinks].
   static Future<void> setReadyForNavigation(bool ready) =>

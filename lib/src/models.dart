@@ -96,6 +96,7 @@ enum MatchType {
   clipboard('clipboard'),
   appClip('app_clip'),
   claim('claim'),
+  fingerprint('fingerprint'),
   none('none');
 
   const MatchType(this.wireValue);
@@ -152,6 +153,64 @@ enum LinkProcessingMode {
   }
 }
 
+/// Gap 1 — short-link expand UX.
+enum ResolveMode {
+  awaitMode('await'),
+  optimistic('optimistic');
+
+  const ResolveMode(this.wireValue);
+  final String wireValue;
+
+  static ResolveMode? fromWire(String? value) {
+    switch (value) {
+      case 'await':
+        return ResolveMode.awaitMode;
+      case 'optimistic':
+        return ResolveMode.optimistic;
+      default:
+        return null;
+    }
+  }
+}
+
+/// Response from POST /v1/links/expand.
+class ExpandResult {
+  const ExpandResult({
+    required this.linkId,
+    required this.code,
+    required this.host,
+    required this.destinationPath,
+    required this.url,
+    this.params = const {},
+    this.linkResolveMode,
+    this.appResolveMode,
+    this.appExpandTimeoutMs,
+  });
+
+  final String linkId;
+  final String code;
+  final String host;
+  final String destinationPath;
+  final Map<String, String> params;
+  final String url;
+  final ResolveMode? linkResolveMode;
+  final ResolveMode? appResolveMode;
+  final int? appExpandTimeoutMs;
+}
+
+/// Nav target after expand / path-map.
+class ResolvedNavTarget {
+  const ResolvedNavTarget({
+    required this.href,
+    this.linkId,
+    this.pendingExpand = false,
+  });
+
+  final String href;
+  final String? linkId;
+  final bool pendingExpand;
+}
+
 /// Configure options for [TaqlynSdk.configure].
 ///
 /// The control-plane origin is baked into the SDK (`https://api.taqlyn.com`).
@@ -159,13 +218,25 @@ class SdkOptions {
   const SdkOptions({
     this.linkProcessingMode = LinkProcessingMode.all,
     this.env,
+    this.resolveMode,
+    this.fallbackPath = '/',
+    this.hosts = const [],
+    this.timeoutMs = 1500,
   });
 
   final LinkProcessingMode linkProcessingMode;
   final String? env;
+  final ResolveMode? resolveMode;
+  final String? fallbackPath;
+  final List<String> hosts;
+  final int timeoutMs;
 
   Map<String, Object?> toMap() => {
         'linkProcessingMode': linkProcessingMode.wireValue,
         if (env != null) 'env': env,
+        if (resolveMode != null) 'resolveMode': resolveMode!.wireValue,
+        if (fallbackPath != null) 'fallbackPath': fallbackPath,
+        'hosts': hosts,
+        'timeoutMs': timeoutMs,
       };
 }
