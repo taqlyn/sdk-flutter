@@ -1,60 +1,24 @@
-name: Publish Flutter Plugin (pub.dev)
+# https://dart.dev/tools/pub/automated-publishing
+#
+# pub.dev Admin → Automated publishing:
+#   Repository:  taqlyn/sdk-flutter
+#   Tag pattern: v{{version}}
+#   Environment: pub.dev  (optional; must match `with.environment` below)
+#
+# Create GitHub Environment `pub.dev` under Settings → Environments.
+# Pub.dev rejects publishes that are not triggered by a matching git tag push.
 
-# pub.dev OIDC requires dart-lang/setup-dart (writes GitHub OIDC credentials).
-# Automated publishing must also be enabled on pub.dev for this repo + tag pattern.
+name: Publish to pub.dev
 
 on:
-  release:
-    types: [published]
   push:
     tags:
-      - 'v*'
-  workflow_dispatch:
-
-concurrency:
-  group: publish-flutter-${{ github.ref }}
-  cancel-in-progress: false
-
-permissions:
-  contents: read
-  id-token: write
+      - 'v[0-9]+.[0-9]+.[0-9]+' # tag-pattern on pub.dev: 'v{{version}}'
 
 jobs:
   publish:
-    name: Verify & Publish to pub.dev
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    environment:
-      name: pubdev
-      url: https://pub.dev/packages/taqlyn_sdk
     permissions:
-      contents: read
-      id-token: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # Provisions ~/.pub-cache credentials from the GitHub OIDC token.
-      - name: Setup Dart (OIDC for pub.dev)
-        uses: dart-lang/setup-dart@v1
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-
-      # Root only — example may pin a newer taqlyn_nav_go_router than pub.dev has yet.
-      - name: Install dependencies
-        run: dart pub get
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Verify package (dry-run)
-        run: dart pub publish --dry-run
-
-      - name: Publish to pub.dev via OIDC
-        run: |
-          set -euo pipefail
-          echo "GITHUB_ACTIONS=${GITHUB_ACTIONS:-} GITHUB_REF=$GITHUB_REF"
-          timeout 180 dart pub publish --force
+      id-token: write # Required for authentication using OIDC
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      environment: pub.dev
