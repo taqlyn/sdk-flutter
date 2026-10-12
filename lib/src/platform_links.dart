@@ -13,17 +13,19 @@ bool isIosPlatformLink(DeferredLink link) {
     case MatchType.claim:
       return true;
     case MatchType.installReferrer:
+    case MatchType.fingerprint:
     case MatchType.none:
       return false;
   }
 }
 
-/// Warm App Link, or deferred Install Referrer / claim (Android).
+/// Warm App Link, or deferred Install Referrer / claim / fingerprint (Android).
 bool isAndroidPlatformLink(DeferredLink link) {
   if (!link.isDeferred) return true;
   switch (link.matchType) {
     case MatchType.installReferrer:
     case MatchType.claim:
+    case MatchType.fingerprint:
       return true;
     case MatchType.clipboard:
     case MatchType.appClip:
