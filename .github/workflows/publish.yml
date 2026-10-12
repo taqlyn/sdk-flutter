@@ -1,9 +1,7 @@
 name: Publish Flutter Plugin (pub.dev)
 
-# Publish after com.taqlyn:taqlyn-sdk (Maven Central) and TaqlynSDK (SPM/CocoaPods)
-# are on their registries. This repo cannot wait on those other repositories.
-#
-# pub.dev uses tokenless OIDC automated publishing (verified publisher taqlyn.com).
+# pub.dev OIDC requires dart-lang/setup-dart (writes GitHub OIDC credentials).
+# Automated publishing must also be enabled on pub.dev for this repo + tag pattern.
 
 on:
   release:
@@ -19,7 +17,7 @@ concurrency:
 
 permissions:
   contents: read
-  id-token: write # Required for pub.dev OIDC exchange
+  id-token: write
 
 jobs:
   publish:
@@ -36,13 +34,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Provisions ~/.pub-cache credentials from the GitHub OIDC token.
+      - name: Setup Dart (OIDC for pub.dev)
+        uses: dart-lang/setup-dart@v1
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
 
+      # Root only — example may pin a newer taqlyn_nav_go_router than pub.dev has yet.
       - name: Install dependencies
-        run: flutter pub get
+        run: dart pub get
 
       - name: Run tests
         run: flutter test
@@ -51,10 +54,7 @@ jobs:
         run: dart pub publish --dry-run
 
       - name: Publish to pub.dev via OIDC
-        env:
-          PUB_DETAILED_TIMING: "1"
         run: |
           set -euo pipefail
           echo "GITHUB_ACTIONS=${GITHUB_ACTIONS:-} GITHUB_REF=$GITHUB_REF"
-          # Bound wait: interactive auth hangs forever when OIDC/automated publishing is misconfigured.
-          timeout 180 dart pub publish --force -v
+          timeout 180 dart pub publish --force
