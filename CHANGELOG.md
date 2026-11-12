@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.1
+
+- Android: depend on `taqlyn-sdk` 0.2.1 — a failed Install Referrer read is retried on the next launch instead of marking the install organic
+
 ## 0.2.0
 
 - Short-link expand (`resolveIncomingUrl`, await / optimistic)
