@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.3
+
+- Android: depend on `taqlyn-sdk` 0.2.4
+
 ## 0.2.2
 
 - Android: depend on `taqlyn-sdk` 0.2.3 — fixes the deferred-link resolve response being ignored (always "no match")
