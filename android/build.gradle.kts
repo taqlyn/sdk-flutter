@@ -63,7 +63,7 @@ kotlin {
 }
 
 dependencies {
-    implementation("com.taqlyn:taqlyn-sdk:0.2.3")
+    implementation("com.taqlyn:taqlyn-sdk:0.2.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
